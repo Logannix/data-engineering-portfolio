@@ -1,10 +1,29 @@
 import streamlit as st
 
-st.title("My Data Engineering Portfolio")
+st.set_page_config(
+    page_title="Data Engineering Portfolio",
+    layout="wide"
+)
 
-st.write("Welcome to my first Streamlit cloud application.")
+st.title("📊 My Data Engineering Portfolio")
+st.subheader("Welcome to my interactive showcase")
 
-st.header("Projects")
-st.write("- Apache NiFi Data Pipelines")
-st.write("- PostgreSQL Integration")
-st.write("- Dashboard Analytics")
+menu = st.sidebar.selectbox(
+    "Navigation",
+    ["Home", "Projects", "Dashboards", "About Me"]
+)
+
+if menu == "Home":
+    st.write("Welcome to my portfolio. Explore my work using the sidebar.")
+
+elif menu == "Projects":
+    st.header("🚀 Projects")
+    st.write("List your Streamlit / NiFi / PostgreSQL / ETL projects here.")
+
+elif menu == "Dashboards":
+    st.header("📈 Dashboards")
+    st.write("Add charts and analytics here.")
+
+elif menu == "About Me":
+    st.header("👨‍💻 About Me")
+    st.write("Data Engineering student passionate about pipelines, ETL, and cloud systems.")
