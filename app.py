@@ -1,29 +1,46 @@
 import streamlit as st
+import pandas as pd
 
-st.set_page_config(
-    page_title="Data Engineering Portfolio",
-    layout="wide"
-)
+st.set_page_config(page_title="Data Portfolio", layout="wide")
 
-st.title("📊 My Data Engineering Portfolio")
-st.subheader("Welcome to my interactive showcase")
-
+# ---------------- SIDEBAR NAV ----------------
 menu = st.sidebar.selectbox(
     "Navigation",
-    ["Home", "Projects", "Dashboards", "About Me"]
+    ["Home", "Projects", "Dashboards", "Database"]
 )
 
+# ---------------- HOME ----------------
 if menu == "Home":
-    st.write("Welcome to my portfolio. Explore my work using the sidebar.")
+    st.title("📊 Data Engineering Portfolio")
 
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Projects", "5")
+
+    with col2:
+        st.metric("Pipelines", "3")
+
+    with col3:
+        st.metric("Dashboards", "2")
+
+# ---------------- PROJECTS ----------------
 elif menu == "Projects":
     st.header("🚀 Projects")
-    st.write("List your Streamlit / NiFi / PostgreSQL / ETL projects here.")
+    st.write("Your ETL, Streamlit, NiFi projects go here")
 
+# ---------------- DASHBOARDS ----------------
 elif menu == "Dashboards":
     st.header("📈 Dashboards")
-    st.write("Add charts and analytics here.")
 
-elif menu == "About Me":
-    st.header("👨‍💻 About Me")
-    st.write("Data Engineering student passionate about pipelines, ETL, and cloud systems.")
+    data = pd.DataFrame({
+        "Project": ["ETL", "Streamlit", "NiFi"],
+        "Progress": [90, 70, 80]
+    })
+
+    st.bar_chart(data.set_index("Project"))
+
+# ---------------- DATABASE ----------------
+elif menu == "Database":
+    st.header("🗄️ Database Connection Layer")
+    st.write("PostgreSQL integration will go here")
