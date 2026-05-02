@@ -1,46 +1,33 @@
 import streamlit as st
-import pandas as pd
+import psycopg2
 
-st.set_page_config(page_title="Data Portfolio", layout="wide")
+DATABASE_URL = st.secrets["DATABASE_URL"]
 
-# ---------------- SIDEBAR NAV ----------------
-menu = st.sidebar.selectbox(
-    "Navigation",
-    ["Home", "Projects", "Dashboards", "Database"]
-)
+def get_connection():
+    return psycopg2.connect(DATABASE_URL)
 
-# ---------------- HOME ----------------
-if menu == "Home":
-    st.title("📊 Data Engineering Portfolio")
+st.title("Neon + Streamlit Connection Test")
 
-    col1, col2, col3 = st.columns(3)
+try:
+    conn = get_connection()
+    cur = conn.cursor()
 
-    with col1:
-        st.metric("Projects", "5")
+    asset_name = st.text_input("Asset Name")
+    category = st.text_input("Category")
 
-    with col2:
-        st.metric("Pipelines", "3")
+    if st.button("Save Asset"):
+        cur.execute(
+            "INSERT INTO assets (asset_name, category) VALUES (%s, %s)",
+            (asset_name, category)
+        )
+        conn.commit()
+        st.success("Asset saved successfully!")
 
-    with col3:
-        st.metric("Dashboards", "2")
+    cur.execute("SELECT * FROM assets ORDER BY id DESC;")
+    rows = cur.fetchall()
 
-# ---------------- PROJECTS ----------------
-elif menu == "Projects":
-    st.header("🚀 Projects")
-    st.write("Your ETL, Streamlit, NiFi projects go here")
+    st.subheader("Saved Assets")
+    st.dataframe(rows)
 
-# ---------------- DASHBOARDS ----------------
-elif menu == "Dashboards":
-    st.header("📈 Dashboards")
-
-    data = pd.DataFrame({
-        "Project": ["ETL", "Streamlit", "NiFi"],
-        "Progress": [90, 70, 80]
-    })
-
-    st.bar_chart(data.set_index("Project"))
-
-# ---------------- DATABASE ----------------
-elif menu == "Database":
-    st.header("🗄️ Database Connection Layer")
-    st.write("PostgreSQL integration will go here")
+except Exception as e:
+    st.error(f"Database connection failed: {e}")
